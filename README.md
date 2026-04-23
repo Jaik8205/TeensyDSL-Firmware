@@ -67,30 +67,30 @@ The result is a device that:
 TeensyDSL is not a simple "type these keys" macro device. It's a layered interpreter with a real architecture:
 
 ```
- SD Card (.txt scripts)
-        │
-        ▼
-  ┌──────────────┐
-  │  File Loader │  ← line-by-line reader, 512 lines × 256 chars max
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │  Pre-Scanner │  ← first pass: registers all LABEL and FUNCTION definitions
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │   Validator  │  ← static analysis: syntax, arity, jump targets, call targets
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────────┐
-  │  Tokenizer       │  ← single-pass, quoted-string-aware, case-insensitive dispatch
-  │  + Dispatch Table│  ← 50+ commands, O(n) lookup, arity checked before dispatch
-  └──────┬───────────┘
-         │
-         ▼
+             SD Card (.txt scripts)
+                      │
+                      ▼
+               ┌──────────────┐
+               │  File Loader │  ← line-by-line reader, 512 lines × 256 chars max
+               └──────┬───────┘
+                      │
+                      ▼
+               ┌──────────────┐
+               │  Pre-Scanner │  ← first pass: registers all LABEL and FUNCTION definitions
+               └──────┬───────┘
+                      │
+                      ▼
+               ┌──────────────┐
+               │   Validator  │  ← static analysis: syntax, arity, jump targets, call targets
+               └──────┬───────┘
+                      │
+                      ▼
+             ┌──────────────────┐
+             │  Tokenizer       │  ← single-pass, quoted-string-aware, case-insensitive dispatch
+             │  + Dispatch Table│  ← 50+ commands, O(n) lookup, arity checked before dispatch
+             └────────┬─────────┘
+                      │
+                      ▼
   ┌─────────────────────────────────────────┐
   │  Cooperative Execution Loop             │
   │  One instruction per loop() tick        │
