@@ -4,13 +4,13 @@
 > Point it at any computer. No drivers. No software. No configuration. Just plug in, browse to your script, and watch it execute.
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║           TeensyDSL v7 — Stability + Abstraction                ║
-║     Tokenizer · Dispatch Table · Validator · Rate Limiter       ║
-╠══════════════════════════════════════════════════════════════════╣
+╔════════════════════════════════════════════════════════════════╗
+║           TeensyDSL v7 — Stability + Abstraction               ║
+║     Tokenizer · Dispatch Table · Validator · Rate Limiter      ║
+╠════════════════════════════════════════════════════════════════╣
 ║  Board:  Teensy 4.1 (IMXRT1062, 600 MHz Cortex-M7)             ║
-║  USB:    Serial + Keyboard + Mouse + Joystick                   ║
-╚══════════════════════════════════════════════════════════════════╝
+║  USB:    Serial + Keyboard + Mouse + Joystick                  ║
+╚════════════════════════════════════════════════════════════════╝
 ```
 
 ---
@@ -70,14 +70,14 @@ TeensyDSL is not a simple "type these keys" macro device. It's a layered interpr
  SD Card (.txt scripts)
         │
         ▼
-  ┌─────────────┐
+  ┌──────────────┐
   │  File Loader │  ← line-by-line reader, 512 lines × 256 chars max
-  └──────┬──────┘
+  └──────┬───────┘
          │
          ▼
-  ┌─────────────┐
+  ┌──────────────┐
   │  Pre-Scanner │  ← first pass: registers all LABEL and FUNCTION definitions
-  └──────┬──────┘
+  └──────┬───────┘
          │
          ▼
   ┌──────────────┐
@@ -107,8 +107,8 @@ The device runs a 7-state finite state machine:
 ```
 ST_BOOT → ST_OS_MENU → ST_FILE_MENU → ST_VALIDATE_RESULT → ST_RUNNING
                                                                   │
-                                               ST_CHECKPOINT ←───┤
-                                               ST_HALTED    ←───┘
+                                               ST_CHECKPOINT ←────┤
+                                               ST_HALTED    ←─────┘
 ```
 
 Every state has its own OLED renderer and input handler. The OLED refreshes at **30 Hz**, completely independent of script execution speed.
