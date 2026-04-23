@@ -1,37 +1,37 @@
 /*
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║           TeensyDSL v6 — Stability + Abstraction                ║
- * ║     Tokenizer · Dispatch Table · Validator · Rate Limiter       ║
+ * ║           TeensyDSL v6 — Stability + Abstraction                 ║
+ * ║     Tokenizer · Dispatch Table · Validator · Rate Limiter        ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║  ARDUINO IDE:                                                    ║
- * ║  Board    → Teensy 4.1 (recommended) or 4.0                     ║
- * ║  USB Type → "Serial + Keyboard + Mouse + Joystick"              ║
- * ║  Libraries: SD, Keyboard, Wire  (Teensy built-in)               ║
- * ║             Adafruit_SSD1306 + GFX  (Library Manager)           ║
- * ║             Watchdog_t4             (Library Manager, optional) ║
+ * ║  Board    → Teensy 4.1 (recommended) or 4.0                      ║
+ * ║  USB Type → "Serial + Keyboard + Mouse + Joystick"               ║
+ * ║  Libraries: SD, Keyboard, Wire  (Teensy built-in)                ║ 
+ * ║             Adafruit_SSD1306 + GFX  (Library Manager)            ║
+ * ║             Watchdog_t4             (Library Manager, optional)  ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║  WIRING:                                                         ║
- * ║  OLED SDA/SCL  → 18/19   SD → built-in slot   LED → 13        ║
- * ║  BTN_UP        → pin 3 → GND                                   ║
- * ║  BTN_DOWN      → pin 4 → GND                                   ║
- * ║  BTN_SELECT    → pin 5 → GND                                   ║
- * ║  BTN_BACK      → pin 6 → GND                                   ║
- * ║  BTN_CHECKPOINT→ pin 7 → GND                                   ║
+ * ║  OLED SDA/SCL  → 18/19   SD → built-in slot   LED → 13           ║
+ * ║  BTN_UP        → pin 3 → GND                                     ║
+ * ║  BTN_DOWN      → pin 4 → GND                                     ║
+ * ║  BTN_SELECT    → pin 5 → GND                                     ║
+ * ║  BTN_BACK      → pin 6 → GND                                     ║
+ * ║  BTN_CHECKPOINT→ pin 7 → GND                                     ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║  SD CARD LAYOUT:                                                 ║
- * ║  /windows/  /mac/  /ubuntu/  /gnome/  (auto-created at boot)   ║
+ * ║  /windows/  /mac/  /ubuntu/  /gnome/  (auto-created at boot)     ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║  v6 ARCHITECTURAL CHANGES:                                       ║
- * ║  1. Tokenizer   — single-pass, quoted-string-aware, typed       ║
- * ║  2. Dispatch table — array of {name, minArgs, handler_fn}       ║
- * ║                   replaces the 40-branch if-chain               ║
- * ║  3. Script validator — runs before execution, shows result on   ║
- * ║                   OLED, blocks run on syntax errors             ║
- * ║  4. Overflow guards — GUARD_BOUNDS macro on every array write   ║
- * ║  5. HID rate limiter — min 2ms between reports, burst cap 50/s  ║
- * ║  6. Hardware watchdog — chip resets if software hangs entirely  ║
- * ║  7. Error tiers — parse errors warn+skip, fatal errors halt     ║
- * ║  NOTE: Uses Teensy 4.1 built-in SDIO slot (not SPI).           ║
+ * ║  1. Tokenizer   — single-pass, quoted-string-aware, typed        ║
+ * ║  2. Dispatch table — array of {name, minArgs, handler_fn}        ║
+ * ║                   replaces the 40-branch if-chain                ║
+ * ║  3. Script validator — runs before execution, shows result on    ║
+ * ║                   OLED, blocks run on syntax errors              ║
+ * ║  4. Overflow guards — GUARD_BOUNDS macro on every array write    ║
+ * ║  5. HID rate limiter — min 2ms between reports, burst cap 50/s   ║
+ * ║  6. Hardware watchdog — chip resets if software hangs entirely   ║
+ * ║  7. Error tiers — parse errors warn+skip, fatal errors halt      ║
+ * ║  NOTE: Uses Teensy 4.1 built-in SDIO slot (not SPI).             ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
@@ -179,12 +179,12 @@ static inline const char* arg(const TokenList& tl, int idx) {
  * GUARD_BOUNDS — checks an index against a max, logs error, and returns
  * from the calling function if out of range. Used in every array write.
  */
-#define GUARD_BOUNDS(idx, maxVal, context)                               \
+#define GUARD_BOUNDS(idx, maxVal, context)                                \
     do {                                                                  \
-        if ((int)(idx) < 0 || (int)(idx) >= (int)(maxVal)) {            \
+        if ((int)(idx) < 0 || (int)(idx) >= (int)(maxVal)) {              \
             char _gb[56];                                                 \
-            snprintf(_gb, sizeof(_gb), "OOB " context ": %d (max %d)",  \
-                     (int)(idx), (int)(maxVal));                         \
+            snprintf(_gb, sizeof(_gb), "OOB " context ": %d (max %d)",    \
+                     (int)(idx), (int)(maxVal));                          \
             dbgErr(_gb);                                                  \
             return;                                                       \
         }                                                                 \
@@ -192,14 +192,14 @@ static inline const char* arg(const TokenList& tl, int idx) {
 
 // Same but returns false instead of void
 #define GUARD_BOUNDS_F(idx, maxVal, context)                             \
-    do {                                                                  \
-        if ((int)(idx) < 0 || (int)(idx) >= (int)(maxVal)) {            \
-            char _gb[56];                                                 \
-            snprintf(_gb, sizeof(_gb), "OOB " context ": %d (max %d)",  \
+    do {                                                                 \
+        if ((int)(idx) < 0 || (int)(idx) >= (int)(maxVal)) {             \
+            char _gb[56];                                                \
+            snprintf(_gb, sizeof(_gb), "OOB " context ": %d (max %d)",   \
                      (int)(idx), (int)(maxVal));                         \
-            dbgErr(_gb);                                                  \
-            return false;                                                 \
-        }                                                                 \
+            dbgErr(_gb);                                                 \
+            return false;                                                \
+        }                                                                \
     } while (0)
 
 // ─────────────────────────────────────────────────────────────────────
